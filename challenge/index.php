@@ -35,6 +35,7 @@ $pass = mysqli_real_escape_string($con, $_POST['pass']);
   
   //$password = hash('sha256', $pass); // password hashing
 
+ 	//serch for such a user in the DB
   $res=mysqli_query($con, "SELECT driver_id, first_name, last_name, pass FROM drivers WHERE email='$email'");
   $count=0;
   //var_dump(is_object($res));
@@ -43,13 +44,14 @@ $pass = mysqli_real_escape_string($con, $_POST['pass']);
 	
     if($count !=0){
 	  $row=mysqli_fetch_array($res, MYSQLI_ASSOC);
-	  var_dump($row);
+	  //var_dump($row);
    // if uname/pass correct it returns must be 1 row
   }
  }else {
  	echo "User with this e-mail were not found";
  }
 
+ 	//compare the input and stored password for the user
   if( $count == 1 && $row['pass']==$pass ) {
    $_SESSION['user'] = $row['driver_id'];
    header("Location: home.php");
@@ -90,9 +92,9 @@ $pass = mysqli_real_escape_string($con, $_POST['pass']);
 		      <li class="nav-item">
 		        <a class="nav-link" href="logout.php">Log out</a>
 		      </li>
-		      <li class="nav-item">
+		      <!--<li class="nav-item">
 		        <a class="nav-link" href="reservation.php">Make reservation</a>
-		      </li>
+		      </li>-->
 		      <li class="nav-item">
 		        <a class="nav-link" href="#">Contacts</a>
 		      </li>

@@ -4,7 +4,7 @@ ob_start();
 session_start();
 
 if (isset($_SESSION['user']) != "") {
-	header("Location: home"); //send a registered user to home.php
+	header("Location: home.php"); //send a registered user to home.php
 }
 
 include_once('dbconnect.php');
@@ -59,16 +59,16 @@ if(isset($_POST['btn-signup'])) {
 	   $error = true;
 	   $emailError = "Provided Email is already in use.";
 	  }
-	 }
+	}
 
 	// password validation
 	 if (empty($pass)){
 	  $error = true;
 	  $passError = "Please enter password.";
-	 } else if(strlen($pass) < 6) {
+	} else if(strlen($pass) < 6) {
 	  $error = true;
 	  $passError = "Password must have atleast 6 characters.";
-	 }
+	}
 
 	// password hashing for security
 	$password = hash('sha256', $pass);
@@ -83,21 +83,39 @@ if(isset($_POST['btn-signup'])) {
 	$res = mysqli_query($con, $query);
 
 	if ($res) {
-	   $errTyp = "success";
-	   $errMSG = "Successfully registered, you may login now";
-	   unset($first_name);
-	   unset($last_name);
-	   unset($email);
-	   unset($pass);
-	   //var_dump($errMSG);
+	  $errTyp = "success";
+	  $errMSG = "Successfully registered, you may login now";
+	  unset($first_name);
+	  unset($last_name);
+	  //unset($email);
+	  unset($pass);
+	   
+	  //var_dump($errMSG);
+		
+		//query to get the user ID 
+		$query .= "SELECT driver_id ";
+		$query .= "FROM drivers";
+		$query .= "WHERE email = '$email'";
+
+		//Do the query
+		$res = sqli_query($con, $query);
+		$count = mysqli_num_rows($result);
+	 	
+	 	//Check the query
+	  if(!isset($count) || $count = 0){
+	  	$error = true;
+	  	$emailError = "Email not found";
 	  } else {
-	   $errTyp = "danger";
-	   $errMSG = "Something went wrong, try again later...";
-	   //var_dump($errMSG);
+	  	//Set session as user ID
+	  	$row = mysqli_fetch_assoc($res);
+			$_SESSION['user'] = $row['driver_id'];
+
+			//Redirrect to home.php
+			header('Location: home.php');
+			exit;
+		  }
 	  }
-
 	}
-
 }
 
 ?>
@@ -127,13 +145,10 @@ if(isset($_POST['btn-signup'])) {
 		        <a class="nav-link active" href="register.php">Register</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="logout.php">Log out</a>
-		      </li>
-		      <li class="nav-item">
-		        <a class="nav-link" href="reservation.php">Make reservation</a>
-		      </li>
-		      <li class="nav-item">
 		        <a class="nav-link" href="#">Contacts</a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="index.php">Log in</a>
 		      </li>
 		    </ul>
 		  </div>

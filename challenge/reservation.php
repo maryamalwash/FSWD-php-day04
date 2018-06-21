@@ -1,4 +1,41 @@
-<?php include("data.php");?>
+<?php
+ob_start();
+session_start();
+
+if (!isset($_SESSION['user'])) {
+ header("Location: index.php");
+} 
+
+include("data.php");
+include_once('dbconnect.php');
+
+//new object for query
+$mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+
+//check connection
+if ($mysqli->connect_errno) {
+	echo "Failed to connect to MySQL: " . $mysqli->connect_error;
+}
+
+//SQL statement
+$sqlStatement  = "SELECT * ";
+$sqlStatement .= "FROM cars";
+
+//do the query
+$result = $mysqli->query($sqlStatement);
+
+//check the result
+if (!$result) {
+	$outputDisplay .= "<p>MySQL No: " . $mysqli->errno . "</p>";
+	$outputDisplay .= "<p>MySQL Error: " . $mysqli->error . "</p>";
+	$outputDisplay .= "<p>SQL Statement: " . $sql_statement . "</p>";
+	$outputDisplay .= "<p>MySQL Affected Rows: " . $mysqli->affected_rows . "</p>";
+	} else {
+		$rows = $result->fetch_all(MYSQLI_ASSOC);
+	}
+
+
+?>
 
 <!doctype html>
 <!DOCTYPE html>
@@ -16,20 +53,23 @@
 <body>
 	<header>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		  <a class="navbar-brand" href="#">Cool wheels</a>
+		  <a class="navbar-brand" href="index.php">Cool wheels</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
 		    <span class="navbar-toggler-icon"></span>
 		  </button>
 		  <div class="collapse navbar-collapse" id="navbarText">
 		    <ul class="navbar-nav mr-auto">
-		      <li class="nav-item active">
+		      <li class="nav-item">
 		        <a class="nav-link" href="fleet.php">Our fleet<span class="sr-only">(current)</span></a>
 		      </li>
-		      <li class="nav-item">
+		      <li class="nav-item active">
 		        <a class="nav-link" href="reservation.php">Make reservation</a>
 		      </li>
 		      <li class="nav-item">
 		        <a class="nav-link" href="#">Contacts</a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="logout.php?logout">Log out</a>
 		      </li>
 		    </ul>
 		  </div>
@@ -39,36 +79,18 @@
 		<h1>Fill the form to book a car</h1>
 		<div class="row">
 		<div class="col-8 col-md-offset-2">
-		<form>
+		<form method="post" action="reservation_done.php" autocomplete="off">
 
 			<select class="custom-select" name="car_id">
 				<option selected>Select your car</option>
-				<?php 
-				$i = 1;
-				foreach($fleet as $car => $features){
+				<?php
+				foreach($rows as $car => $features){
 					?>
-					<option value="<?php echo $i++ ?>"><?php echo $car?></option>
+					<option value="" style="color: black"><?php echo $features["car_id"]; ?></option>
 					<?php
 				}	
 				?>
 			</select>
-
-			<div class="form-group">
-				<label for="exampleFormControlInput1">First name</label>
-				<input type="text" class="form-control" name="first_name"><!--id="exampleFormControlInput1"-->
-			</div>
-
-			<div class="form-group">
-				<label for="exampleFormControlInput1">Last name</label>
-				<input type="text" class="form-control" name="last_name">
-			</div>
-
-			<!--<div class="input-group date" data-provide="datepicker">
-		    <input type="text" class="form-control">
-		    <div class="input-group-addon">
-		        <span class="glyphicon glyphicon-th"></span>
-		    </div>
-			</div>-->
 
 			<div class="form-group">
 				<label for="exampleFormControlInput1">Birth date</label>
@@ -117,7 +139,9 @@
 				<label for="exampleFormControlInput1">Finish date</label>
 				<input name="finish_date" id="datepicker4"> <!--id="datepicker-->
 			</div>
-
+			<div class="form-group">
+				<button type="submit" class="btn btn-block btn-primary" name="btn-reserve">Reserve a car</button>
+			</div>
 			<!--<div class="form-group">
 				<label for="exampleFormControlTextarea1">Example textarea</label>
 				<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>

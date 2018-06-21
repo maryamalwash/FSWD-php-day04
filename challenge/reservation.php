@@ -90,7 +90,9 @@ if (!$result) {
     <main>
       <h1>Fill the form to book a car</h1>
       <div class="row">
-        <div class="col-8 col-md-offset-2">
+        <div class="col-md-12 "> <style > .col-md-12 {padding: 4%; text-align: center;} option , input {margin-bottom: 2%;}</style>
+            
+        </style>
           <form method="post" action="reservation_done.php" autocomplete="off">
             <select class="custom-select" name="car_id">
                 <option selected>Select your car</option>
@@ -105,49 +107,24 @@ if (!$result) {
                 ?>
             </select>
             <div class="form-group">
-              <label for="exampleFormControlInput1">Birth date</label>
-              <input name="birth_date" id="datepicker1">
+              <label for="exampleFormControlInput1"></label>
+              <input name="birth_date" id="datepicker1" placeholder="Birth date" >
               <!--id="datepicker-->
             </div>
             <div class="form-group">
-              <label for="exampleFormControlInput1">Driving license number</label>
-              <input class="form-control" name="driving_licence_num">
+              <label for="exampleFormControlInput1"></label>
+              <input class="form-control" name="driving_licence_num" placeholder="Driving license number">
             </div>
             <div class="form-group">
-              <label for="exampleFormControlInput1">Driving license date</label>
-              <input name="driving_licence_date" id="datepicker2">
+              <label for="exampleFormControlInput1"></label>
+              <input name="driving_licence_date" id="datepicker2" placeholder="Driving license date">
             </div>
-            <select class="custom-select" name="fk_start_location">
-                <option selected>Start location</option>
+            
+            <select class="custom-select" name="start_location_id">
+                <option selected>Select your start location</option>
                 <?php
-                $i = 1;
-                foreach ($fleet as $car => $features) {
+                foreach ($locations as $location => $features) {
                 ?>
-                <option value="<?php echo $i++ ?>">
-                  <?php echo $car ?>
-                </option>
-                <?php
-                }?>
-            </select>
-            <select class="custom-select" name="fk_finish_location">
-                <option selected>Finish location</option>
-                <?php
-
-                $i = 1;
-                foreach ($fleet as $car => $features) {
-                   ?>
-                <option value="<?php echo $i++ ?>">
-                  <?php echo $car ?>
-                </option>
-                <?php
-                }
-                ?>
-            </select>
-            <select class="custom-select" name="location_id">
-                <option selected>Select your starting location</option>
-                <?php
-                        foreach ($locations as $location => $features) {
-                        ?>
                 <option value="">
                   <?php echo $features["location_id"]; ?>
                 </option>
@@ -155,9 +132,30 @@ if (!$result) {
                 }
                 ?>
             </select>
+
+            <select class="custom-select" name="finish_location_id">
+                <option selected>Select your finishing location</option>
+                <?php
+                foreach ($locations as $location => $features) {
+                ?>
+                <option value="">
+                  <?php echo $features["location_id"]; ?>
+                </option>
+                <?php
+                }
+                ?>
+            </select>
+              
             <div class="form-group">
-              <label for="exampleFormControlInput1">Finish date</label>
-              <input name="finish_date" id="datepicker4">
+              <label for="exampleFormControlInput1"></label>
+              <input name="start_date" id="datepicker3" placeholder="Start date">
+              <!--id="datepicker-->
+            </div>  
+           
+            
+            <div class="form-group">
+              <label for="exampleFormControlInput1"></label>
+              <input name="finish_date" id="datepicker4" placeholder="Finish date">
               <!--id="datepicker-->
             </div>
             <div class="form-group">

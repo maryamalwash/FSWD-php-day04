@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 ob_start();
 session_start();
@@ -7,9 +7,9 @@ if (isset($_SESSION['user']) != "") {
 	header("Location: home.php"); //send a registered user to home.php
 }
 
-include_once('dbconnect.php');
+include_once 'dbconnect.php';
 $error = false;
-if(isset($_POST['btn-signup'])) {
+if (isset($_POST['btn-signup'])) {
 
 	//Proceed with registration
 	$first_name = mysqli_real_escape_string($con, $_POST['first_name']);
@@ -21,53 +21,53 @@ if(isset($_POST['btn-signup'])) {
 
 	//check first name
 	if (empty($first_name)) {
-	  $error = true;
-	  $nameError = "Please enter your full first name.";
-	 } else if (strlen($first_name) < 3) {
-	  $error = true;
-	  $nameError = "First name must have at least 3 characters.";
-	 } else if (!preg_match("/^[a-zA-Z ]+$/",$first_name)) {
-	  $error = true;
-	  $nameError = "First name must contain alphabets and space.";
-	 }
+		$error = true;
+		$nameError = "Please enter your full first name.";
+	} else if (strlen($first_name) < 3) {
+		$error = true;
+		$nameError = "First name must have at least 3 characters.";
+	} else if (!preg_match("/^[a-zA-Z ]+$/", $first_name)) {
+		$error = true;
+		$nameError = "First name must contain alphabets and space.";
+	}
 
 	//check last name
 	if (empty($last_name)) {
-	  $error = true;
-	  $nameError = "Please enter your full last name.";
-	 } else if (strlen($last_name) < 3) {
-	  $error = true;
-	  $nameError = "Last name must have at least 3 characters.";
-	 } else if (!preg_match("/^[a-zA-Z ]+$/",$last_name)) {
-	  $error = true;
-	  $nameError = "Last name must contain alphabets and space.";
-	 }
+		$error = true;
+		$nameError = "Please enter your full last name.";
+	} else if (strlen($last_name) < 3) {
+		$error = true;
+		$nameError = "Last name must have at least 3 characters.";
+	} else if (!preg_match("/^[a-zA-Z ]+$/", $last_name)) {
+		$error = true;
+		$nameError = "Last name must contain alphabets and space.";
+	}
 
 	//check email
-	if ( !filter_var($email,FILTER_VALIDATE_EMAIL) ) {
-	  $error = true;
-	  var_dump($error);
-	  $emailError = "Please enter valid email address.";
-	 } else {
-	  // check whether the email exist or not
-	  $query = "SELECT email FROM drivers WHERE email = '$email'";
-	  $result = mysqli_query($con, $query);
-	  //var_dump($result);
-	  $count = mysqli_num_rows($result);
-	  //var_dump($count);
-	  if($count != 0){
-	   $error = true;
-	   $emailError = "Provided Email is already in use.";
-	  }
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		$error = true;
+		var_dump($error);
+		$emailError = "Please enter valid email address.";
+	} else {
+		// check whether the email exist or not
+		$query = "SELECT email FROM drivers WHERE email = '$email'";
+		$result = mysqli_query($con, $query);
+		//var_dump($result);
+		$count = mysqli_num_rows($result);
+		//var_dump($count);
+		if ($count != 0) {
+			$error = true;
+			$emailError = "Provided Email is already in use.";
+		}
 	}
 
 	// password validation
-	 if (empty($pass)){
-	  $error = true;
-	  $passError = "Please enter password.";
-	} else if(strlen($pass) < 6) {
-	  $error = true;
-	  $passError = "Password must have atleast 6 characters.";
+	if (empty($pass)) {
+		$error = true;
+		$passError = "Please enter password.";
+	} else if (strlen($pass) < 6) {
+		$error = true;
+		$passError = "Password must have atleast 6 characters.";
 	}
 
 	// password hashing for security
@@ -77,44 +77,44 @@ if(isset($_POST['btn-signup'])) {
 		echo $emailError;
 	}*/
 
-	if(!$error) {
+	if (!$error) {
 
-	$query = "INSERT INTO drivers (first_name, last_name, email, pass) VALUES('$first_name', '$last_name','$email','$pass')";
-	$res = mysqli_query($con, $query);
+		$query = "INSERT INTO drivers (first_name, last_name, email, pass) VALUES('$first_name', '$last_name','$email','$pass')";
+		$res = mysqli_query($con, $query);
 
-	if ($res) {
-	  $errTyp = "success";
-	  $errMSG = "Successfully registered, you may login now";
-	  unset($first_name);
-	  unset($last_name);
-	  //unset($email);
-	  unset($pass);
-	   
-	  //var_dump($errMSG);
-		
-		//query to get the user ID 
-		$query .= "SELECT driver_id ";
-		$query .= "FROM drivers";
-		$query .= "WHERE email = '$email'";
+		if ($res) {
+			$errTyp = "success";
+			$errMSG = "Successfully registered, you may login now";
+			unset($first_name);
+			unset($last_name);
+			//unset($email);
+			unset($pass);
 
-		//Do the query
-		$res = sqli_query($con, $query);
-		$count = mysqli_num_rows($result);
-	 	
-	 	//Check the query
-	  if(!isset($count) || $count = 0){
-	  	$error = true;
-	  	$emailError = "Email not found";
-	  } else {
-	  	//Set session as user ID
-	  	$row = mysqli_fetch_assoc($res);
-			$_SESSION['user'] = $row['driver_id'];
+			//var_dump($errMSG);
 
-			//Redirrect to home.php
-			header('Location: home.php');
-			exit;
-		  }
-	  }
+			//query to get the user ID
+			$query .= "SELECT driver_id ";
+			$query .= "FROM drivers";
+			$query .= "WHERE email = '$email'";
+
+			//Do the query
+			$res = mysqli_query($con, $query);
+			$count = mysqli_num_rows($result);
+
+			//Check the query
+			if (!isset($count) || $count = 0) {
+				$error = true;
+				$emailError = "Email not found";
+			} else {
+				//Set session as user ID
+				$row = mysqli_fetch_assoc($res);
+				$_SESSION['user'] = $row['driver_id'];
+
+				//Redirrect to home.php
+				header('Location: home.php');
+				exit;
+			}
+		}
 	}
 }
 
@@ -179,7 +179,7 @@ if(isset($_POST['btn-signup'])) {
 				<label for="exampleFormControlInput1">Password:</label>
 				<input class="form-control" name="pass">
 			</div>
-			
+
 			<button type="submit" class="btn btn-block btn-primary" name="btn-signup">Sign Up</button>
 
 		</form>

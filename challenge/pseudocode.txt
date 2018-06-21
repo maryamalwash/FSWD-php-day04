@@ -1,0 +1,7 @@
+set sql connection
+grab input to $_POST()
+select: get all the cars
+select: get locatioins
+set sql statement to insert into drivers
+	read the last driver ID
+set sql statement to insert into reservarions
